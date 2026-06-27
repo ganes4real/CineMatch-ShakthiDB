@@ -5,12 +5,20 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile.web
-    network_mode: "bridge"
     ports:
       - "5000:5000"
     environment:
-      - DB_HOST=172.17.0.2
+      - DB_HOST=db
       - DB_PORT=8080
       - DB_NAME=postgres
       - DB_USER=postgres
       - DB_PASS=postgres
+    depends_on:
+      - db
+
+  db:
+    image: ganes4real/shaktidb-cinematch:latest
+    user: postgres
+    # We must start ShaktiDB in the foreground so the container stays alive, 
+    # rather than running pg_ctl in the background.
+    command: ["/usr/lib/postgresql/17.7.1.1/bin/postgres", "-D", "/data/sdb"]

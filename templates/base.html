@@ -19,15 +19,33 @@
             <div class="nav-links">
                 <a href="/">Home</a>
                 <a href="#">Categories</a>
-                <div class="user-profile">
-                    <img src="https://ui-avatars.com/api/?name=Guest+User&background=0D8ABC&color=fff" alt="User Profile">
-                </div>
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_superuser %}
+                        <a href="{{ url_for('add_movie') }}" class="admin-link">Admin Dashboard</a>
+                    {% endif %}
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name={{ current_user.username }}&background=0D8ABC&color=fff" alt="User Profile" title="{{ current_user.username }}">
+                    </div>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login / Register</a>
+                {% endif %}
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
     <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-alert flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
         {% block content %}{% endblock %}
     </main>
 
