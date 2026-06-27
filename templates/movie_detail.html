@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="movie-backdrop" style="background-image: url('{{ movie.image_url }}');">
+    <div class="backdrop-overlay"></div>
+</div>
+
+<div class="detail-container">
+    <div class="detail-content glass-panel">
+        <div class="detail-poster">
+            <img src="{{ movie.image_url }}" alt="{{ movie.title }}">
+        </div>
+        <div class="detail-info">
+            <h1>{{ movie.title }} <span class="year">({{ movie.release_year }})</span></h1>
+            <div class="meta-tags">
+                <span class="genre-tag">{{ movie.genre }}</span>
+                <span class="rating-tag">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="currentColor" stroke-linecap="round" stroke-linejoin="round" class="star-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    {{ avg_rating }}
+                </span>
+            </div>
+            
+            <p class="synopsis">{{ movie.description }}</p>
+            
+            <div class="rating-section">
+                <h3>Rate this movie</h3>
+                <form action="{{ url_for('rate_movie') }}" method="POST" class="rating-form">
+                    <input type="hidden" name="movie_id" value="{{ movie.id }}">
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 stars">5 stars</label>
+                        <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars">4 stars</label>
+                        <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars">3 stars</label>
+                        <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars">2 stars</label>
+                        <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star">1 star</label>
+                    </div>
+                    <button type="submit" class="btn-primary">Submit Rating</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if similar_movies %}
+    <section class="similar-movies">
+        <h2>Similar Movies</h2>
+        <div class="movie-grid">
+            {% for sim_movie in similar_movies %}
+            <a href="{{ url_for('movie_detail', movie_id=sim_movie.id) }}" class="movie-card">
+                <img src="{{ sim_movie.image_url }}" alt="{{ sim_movie.title }}" loading="lazy">
+                <div class="movie-info">
+                    <h3>{{ sim_movie.title }}</h3>
+                    <span class="genre-tag">{{ sim_movie.genre }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h1>Discover Your Next <span class="highlight">Favorite Movie</span></h1>
+        <p>Personalized recommendations based on your unique taste.</p>
+        <form class="search-form" action="{{ url_for('index') }}" method="GET">
+            <input type="text" name="search" placeholder="Search for movies, genres..." value="{{ search_query }}">
+            <button type="submit" class="btn-primary">Search</button>
+        </form>
+    </div>
+    <div class="hero-background"></div>
+</section>
+
+{% if not search_query %}
+<section class="recommendations">
+    <div class="section-header">
+        <h2>Recommended For You</h2>
+        <p>Because of the genres you love</p>
+    </div>
+    <div class="movie-grid">
+        {% for movie in recommendations %}
+        <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="movie-card">
+            <img src="{{ movie.image_url }}" alt="{{ movie.title }}" loading="lazy">
+            <div class="movie-info">
+                <h3>{{ movie.title }}</h3>
+                <span class="genre-tag">{{ movie.genre }}</span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<section class="trending">
+    <div class="section-header">
+        <h2>{% if search_query %}Search Results{% else %}Trending Now{% endif %}</h2>
+    </div>
+    <div class="movie-grid">
+        {% for movie in movies %}
+        <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="movie-card">
+            <img src="{{ movie.image_url }}" alt="{{ movie.title }}" loading="lazy">
+            <div class="movie-info">
+                <h3>{{ movie.title }}</h3>
+                <span class="genre-tag">{{ movie.genre }}</span>
+            </div>
+        </a>
+        {% else %}
+        <p class="no-results">No movies found matching your criteria.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
